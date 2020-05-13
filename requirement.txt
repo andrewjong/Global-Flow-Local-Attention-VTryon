@@ -10,3 +10,4 @@ dominate
 opencv-python
 visdom
 IPython
+tqdm

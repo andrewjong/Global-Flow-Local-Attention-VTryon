@@ -98,8 +98,11 @@ For a quick exploration of our model, find the online [colab demo](https://colab
 
 ```bash
 # 1. Create a conda virtual environment.
-conda create -n gfla python=3.6 -y
-source activate gfla
+conda create -n gfla python=3.7 -y
+conda activate gfla
+
+pip install "pillow<7.0.0"
+conda install pytorch==1.0.0 torchvision==0.2.1 cuda100 -c pytorch
 
 # 2. Install dependency
 pip install -r requirement.txt
