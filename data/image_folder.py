@@ -112,7 +112,8 @@ def make_grouped_dataset(dir):
             images.append(paths)
     return images
 
+from os.path import dirname
 def check_path_valid(A_paths, B_paths):
-    assert(len(A_paths) == len(B_paths))
+    assert(len(A_paths) == len(B_paths)), f"Lengths don't match, got {len(A_paths)} and {len(B_paths)}"
     for a, b in zip(A_paths, B_paths):
-        assert(len(a) == len(b))
+        assert(len(a) == len(b)), f"Lengths don't match, got {len(a)} in {dirname(a[0])} and {len(b)} in {dirname(b[0])}"

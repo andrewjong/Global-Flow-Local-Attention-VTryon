@@ -44,6 +44,7 @@ class DanceDataset(AnimationDataset):
 
             parser.set_defaults(load_size=256)
             parser.set_defaults(batchSize=1)
+            # Disable affine transformations for test time by default
             parser.set_defaults(angle=False)
             parser.set_defaults(shift=False)
             parser.set_defaults(scale=False)
@@ -290,6 +291,10 @@ class DanceDataset(AnimationDataset):
         return Ci
 
     def getRandomAffineParam(self):
+        """
+        Generates random affine transformations based on opt.angle, opt.scale, and opt.shift
+        :return:
+        """
         if not self.opt.angle and not self.opt.scale and not self.opt.shift:
             affine_param = None
             return affine_param
