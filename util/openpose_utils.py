@@ -165,7 +165,7 @@ def draw_joint(colors, pose_joints, joint_line_list, radius=2):
 
 def obtain_2d_cords(B_coor, resize_param=None, org_size=None, affine=None):
     pose_joints=dict()
-    pose = B_coor["pose_keypoints_2d"]
+    pose = B_coor["pose_keypoints_2d"] if "pose_keypoints_2d" in B_coor else B_coor["pose_keypoints"]
     coor_x = [pose[3*i]   for i in range(int(len(pose)/3))]
     coor_y = [pose[3*i+1] for i in range(int(len(pose)/3))]
     score  = [pose[3*i+2] for i in range(int(len(pose)/3))]
