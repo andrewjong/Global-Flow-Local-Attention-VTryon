@@ -1,3 +1,7 @@
+# Please note, this is only a fork for my own usage. 
+## See the original at https://github.com/RenYurui/Global-Flow-Local-Attention
+
+
 <p align='center'>
   <b>
     <a href="https://renyurui.github.io/GFLA-web"> Website</a>
