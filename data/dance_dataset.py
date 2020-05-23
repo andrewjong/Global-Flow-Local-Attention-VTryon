@@ -51,7 +51,7 @@ class DanceDataset(AnimationDataset):
 
             parser.set_defaults(use_kp=True)
             parser.set_defaults(total_test_frames=None)
-            parser.set_defaults(test_list='./test_list.csv')
+            # parser.set_defaults(test_list='./test_list.csv')
             parser.set_defaults(cross_eval=False)  
             # parser.set_defaults(test_list=None)
             # parser.set_defaults(cross_eval=False)  
@@ -99,9 +99,9 @@ class DanceDataset(AnimationDataset):
         phase = opt.phase
         phase_dir = phase+'_256'
         self.phase_dir = phase_dir
-        dir_A = os.path.join(opt.dataroot, phase_dir, 'train_A')
-        dir_B_clean = os.path.join(opt.dataroot, phase_dir, 'train_'+'video2d')
-        dir_B_noise = os.path.join(opt.dataroot, phase_dir, 'train_'+'alphapose')
+        dir_A = os.path.join(opt.dataroot, phase_dir, 'A')
+        dir_B_clean = os.path.join(opt.dataroot, phase_dir, 'video2d')
+        dir_B_noise = os.path.join(opt.dataroot, phase_dir, 'alphapose')
 
         A_paths = sorted(make_grouped_dataset(dir_A))
         B_paths_clean = sorted(make_grouped_dataset(dir_B_clean)) 
@@ -111,7 +111,7 @@ class DanceDataset(AnimationDataset):
 
         if phase == 'train':
             if self.opt.use_mask:
-                dir_C = os.path.join(opt.dataroot, phase_dir, 'train_C')
+                dir_C = os.path.join(opt.dataroot, phase_dir, 'C')
                 C_paths = sorted(make_grouped_dataset(dir_C))
                 check_path_valid(A_paths, C_paths)
                 C_paths = self.split_ref_gen(C_paths, self.opt.sub_dataset)

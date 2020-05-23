@@ -1,3 +1,4 @@
+from tqdm import tqdm
 from options.test_options import TestOptions
 import data as Dataset
 from model import create_model
@@ -18,7 +19,7 @@ if __name__=='__main__':
     model = create_model(opt)
 
     with torch.no_grad():
-        for i, data in enumerate(dataset):
+        for i, data in tqdm(enumerate(dataset)):
             model.set_input(data)
             model.test()
 

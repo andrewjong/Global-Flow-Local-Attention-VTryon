@@ -41,8 +41,8 @@ class KeypointTestDataset(AnimationDataset):
     def get_paths(self, opt):
         root = opt.dataroot
         phase = opt.eval_set +'_256'
-        dir_A = os.path.join(opt.dataroot, phase, 'train_A')
-        dir_B_noise = os.path.join(opt.dataroot, phase, 'train_'+self.opt.pose_extractor)
+        dir_A = os.path.join(opt.dataroot, phase, 'A')
+        dir_B_noise = os.path.join(opt.dataroot, phase, self.opt.pose_extractor)
         A_paths = sorted(make_grouped_dataset(dir_A)) 
         B_paths_noise = sorted(make_grouped_dataset(dir_B_noise)) 
         check_path_valid(A_paths, B_paths_noise)
