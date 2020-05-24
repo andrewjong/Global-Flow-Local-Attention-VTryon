@@ -135,21 +135,21 @@ class Visualizer():
         )
 
     # errors: same format as |errors| of plotCurrentErrors
-    def print_current_errors(self, epoch, i, errors, t):
+    def print_current_errors(self, epoch, i, errors, t, printer=print):
         message = '(epoch: %d, iters: %d, time: %.3f) ' % (epoch, i, t)
         for k, v in errors.items():
             message += '%s: %.3f ' % (k, v)
 
-        print(message)
+        printer(message)
         with open(self.log_name, "a") as log_file:
             log_file.write('%s\n' % message)
 
-    def print_current_eval(self, epoch, i, score):
+    def print_current_eval(self, epoch, i, score, printer=print):
         message = '(epoch: %d, iters: %d)' % (epoch, i)
         for k, v in score.items():
             message += '%s: %.3f ' % (k, v)
 
-        print(message)
+        printer(message)
         with open(self.eval_log_name, "a") as log_file:
             log_file.write('%s\n' % message)  
 
