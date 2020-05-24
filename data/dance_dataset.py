@@ -1,3 +1,4 @@
+import sys
 import os.path
 from data.animation_dataset import AnimationDataset
 from data.image_folder import make_grouped_dataset, check_path_valid
@@ -254,41 +255,56 @@ class DanceDataset(AnimationDataset):
         return ref_image, ref_skeleton, ref_path
 
     def load_image(self, A_path):
-        A_img = Image.open(A_path) 
-        # padding white color after affine transformation  
-        fillWhiteColor = True if self.opt.sub_dataset=='fashion' else False
-        Ai = self.transform_image(A_img, self.load_size, affine=self.affine_param, fillWhiteColor=fillWhiteColor)
+        try:
+            A_img = Image.open(A_path)
+            # padding white color after affine transformation
+            fillWhiteColor = True if self.opt.sub_dataset=='fashion' else False
+            Ai = self.transform_image(A_img, self.load_size, affine=self.affine_param, fillWhiteColor=fillWhiteColor)
+        except:
+            e = sys.exc_info()[0]
+            print("Error: failed on path", A_path)
+            raise e
         return Ai
 
 
     def load_skeleton(self, B_path, is_clean_pose=True):
-        B_coor = json.load(open(B_path))["people"]
-        if len(B_coor)==0:
-            pose = torch.zeros(self.opt.structure_nc, self.load_size[0], self.load_size[1])
-            Bi = pose
-        else:
-            B_coor = B_coor[0]
-            pose_dict = openpose_utils.obtain_2d_cords(B_coor, resize_param=self.load_size, org_size=self.org_size, affine=self.affine_param)
-            pose_body = pose_dict['body']
-            if not is_clean_pose:
-                pose_body = openpose_utils.openpose18_to_coco17(pose_body)
+        try:
+            B_coor = json.load(open(B_path))["people"]
+            if len(B_coor)==0:
+                pose = torch.zeros(self.opt.structure_nc, self.load_size[0], self.load_size[1])
+                Bi = pose
+            else:
+                B_coor = B_coor[0]
+                pose_dict = openpose_utils.obtain_2d_cords(B_coor, resize_param=self.load_size, org_size=self.org_size, affine=self.affine_param)
+                pose_body = pose_dict['body']
+                if not is_clean_pose:
+                    pose_body = openpose_utils.openpose18_to_coco17(pose_body)
 
-            pose_numpy = openpose_utils.obtain_map(pose_body, self.load_size) 
-            pose = np.transpose(pose_numpy,(2, 0, 1))
-            pose = torch.Tensor(pose)
-            Bi = pose
-            if not self.opt.no_bone_map:
-                color = np.zeros(shape=self.load_size + (3, ), dtype=np.uint8)
-                LIMB_SEQ = openpose_utils.LIMB_SEQ_HUMAN36M_17 if is_clean_pose else openpose_utils.LIMB_SEQ_COCO_17
-                color = openpose_utils.draw_joint(color, pose_body.astype(np.int), LIMB_SEQ)
-                color = np.transpose(color,(2,0,1))
-                color = torch.Tensor(color)
-                Bi = torch.cat((Bi, color), dim=0)
+                pose_numpy = openpose_utils.obtain_map(pose_body, self.load_size)
+                pose = np.transpose(pose_numpy,(2, 0, 1))
+                pose = torch.Tensor(pose)
+                Bi = pose
+                if not self.opt.no_bone_map:
+                    color = np.zeros(shape=self.load_size + (3, ), dtype=np.uint8)
+                    LIMB_SEQ = openpose_utils.LIMB_SEQ_HUMAN36M_17 if is_clean_pose else openpose_utils.LIMB_SEQ_COCO_17
+                    color = openpose_utils.draw_joint(color, pose_body.astype(np.int), LIMB_SEQ)
+                    color = np.transpose(color,(2,0,1))
+                    color = torch.Tensor(color)
+                    Bi = torch.cat((Bi, color), dim=0)
+        except:
+            e = sys.exc_info()[0]
+            print("Error: failed on path", B_path)
+            raise e
         return Bi
 
     def load_mask(self, C_path):
-        C_mask = Image.open(C_path)
-        Ci = self.transform_image(C_mask, self.load_size, normalize=False, affine=self.affine_param)
+        try:
+            C_mask = Image.open(C_path)
+            Ci = self.transform_image(C_mask, self.load_size, normalize=False, affine=self.affine_param)
+        except:
+            e = sys.exc_info()[0]
+            print("Error: failed on path", C_path)
+            raise e
         return Ci
 
     def getRandomAffineParam(self):
@@ -315,19 +331,24 @@ class DanceDataset(AnimationDataset):
 
 
     def load_keypoint(self, B_path, is_clean_pose):
-        B_coor = json.load(open(B_path))["people"]
-        if len(B_coor)==0:
-            pose = torch.zeros(17*2, 1)
-        else:
-            B_coor = B_coor[0]
-            pose_dict = openpose_utils.obtain_2d_cords(B_coor, resize_param=self.load_size, org_size=self.org_size, affine=self.affine_param)
-            if not is_clean_pose:
-                pose = openpose_utils.openpose18_to_coco17(pose_dict['body'])
+        try:
+            B_coor = json.load(open(B_path))["people"]
+            if len(B_coor)==0:
+                pose = torch.zeros(17*2, 1)
             else:
-                pose = pose_dict['body']
-            pose = torch.Tensor(pose).float()
-            pose = pose.view(17*2, 1)
-            pose = 2*pose/self.load_size[1]-1
+                B_coor = B_coor[0]
+                pose_dict = openpose_utils.obtain_2d_cords(B_coor, resize_param=self.load_size, org_size=self.org_size, affine=self.affine_param)
+                if not is_clean_pose:
+                    pose = openpose_utils.openpose18_to_coco17(pose_dict['body'])
+                else:
+                    pose = pose_dict['body']
+                pose = torch.Tensor(pose).float()
+                pose = pose.view(17*2, 1)
+                pose = 2*pose/self.load_size[1]-1
+        except:
+            e = sys.exc_info()[0]
+            print("Error: failed on path", B_path)
+            raise e
         return pose
 
 
