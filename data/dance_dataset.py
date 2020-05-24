@@ -265,6 +265,7 @@ class DanceDataset(AnimationDataset):
         B_coor = json.load(open(B_path))["people"]
         if len(B_coor)==0:
             pose = torch.zeros(self.opt.structure_nc, self.load_size[0], self.load_size[1])
+            Bi = pose
         else:
             B_coor = B_coor[0]
             pose_dict = openpose_utils.obtain_2d_cords(B_coor, resize_param=self.load_size, org_size=self.org_size, affine=self.affine_param)
