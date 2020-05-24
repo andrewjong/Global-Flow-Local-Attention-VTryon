@@ -1,4 +1,5 @@
 import time
+from tqdm import tqdm
 from options.train_options import TrainOptions
 import data as Dataset
 from model import create_model
@@ -29,7 +30,7 @@ if __name__ == '__main__':
         epoch+=1
         print('\n Training epoch: %d' % epoch)
 
-        for i, data in enumerate(dataset):
+        for i, data in tqdm(enumerate(dataset)):
             iter_start_time = time.time()
             total_iteration += 1
             model.set_input(data)
