@@ -16,6 +16,8 @@ if __name__ == '__main__':
     dataset_size = len(dataset) * opt.batchSize
     print('training images = %d' % dataset_size)
 
-    for i, data in tqdm(enumerate(dataset), total=len(dataset)):
-        pass
+    for epoch in range(10):
+        print("epoch", epoch)
+        for i, data in tqdm(enumerate(dataset), total=len(dataset)):
+            pass
 
