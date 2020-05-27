@@ -67,15 +67,28 @@ python test.py \
 --checkpoints_dir=result
 ```
 
+### Training
+Andrew's training command.
+```
+python train.py \
+--name train_$(date +"%Y-%m-%d-%T") \
+--model dance \
+--attn_layer=2,3 --kernel_size=2=5,3=3 \
+--dataset_mode dance --sub_dataset fashion \
+--gpu_id 0,1,2,3 --display_port 5005 \
+--batchSize 8 \
+--dataroot /newDisk/dataset/vvt_gfla_format \
+--checkpoints_dir checkpoints
+```
 
 
 ### Motion Extraction Net
 
 We provide the details of the motion extraction net to support training and testing on custom datasets. You do not need this if you only want to test on the FashionVideo and iPER dataset.
 
-This network is used to prepossess the noisy skeletons extracted by some pose extraction models. We train this model using the Human36M dataset. We download the training ground-truth label `data_2d_h36m_gt.npz` from [here](https://github.com/facebookresearch/VideoPose3D/blob/master/DATASETS.md). The corresponding input label `data_2d_h36m_detectron_pt_coco.npz` is download from [here](https://github.com/facebookresearch/VideoPose3D/issues/2#issuecomment-444687031).
+This network is used to prepossess the noisy skeletons extracted by some pose extraction models. We train this model using the Human3.6M dataset. We download the training ground-truth label `data_2d_h36m_gt.npz` from [here](https://github.com/facebookresearch/VideoPose3D/blob/master/DATASETS.md). The corresponding input label `data_2d_h36m_detectron_pt_coco.npz` is download from [here](https://github.com/facebookresearch/VideoPose3D/issues/2#issuecomment-444687031).
 
-Use the following code to train this model
+Use the following code to train the Motion Extraction Net. You probably don't need to train unless you want to improve its training on Human3.6M.
 
 ``` bash 
 python train.py \
@@ -86,7 +99,7 @@ python train.py \
 --continue_train
 ```
 
-We also provide the [trained weights](https://drive.google.com/drive/folders/1Tc1MkSuFnGv9a_TcANQcChK6IS43oKQo). Assuming that you want to smooth the skeleton sequences of the iPER training set, you can use the following code
+We also provide the [trained weights](https://drive.google.com/drive/folders/1Tc1MkSuFnGv9a_TcANQcChK6IS43oKQo). Assuming that you want to smooth the skeleton sequences of the dance training set, you can use the following code
 
 ``` bash
 python test.py \
@@ -95,9 +108,9 @@ python test.py \
 --gpu_id=2 \
 --dataset_mode=keypointtest \
 --continue_train \
---dataroot=./dataset/iPER \
---sub_dataset=iper \
---results_dir=./dataset/iPER/train_256/train_video2d \
+--dataroot=./dataset/danceFashion \
+--sub_dataset=fashion \
+--results_dir=./dataset/danceFashion/train_256/video2d \
 --eval_set=train
 ```
 
