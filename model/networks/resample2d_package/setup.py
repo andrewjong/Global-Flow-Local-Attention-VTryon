@@ -14,8 +14,8 @@ nvcc_args = [
     '-gencode', 'arch=compute_61,code=sm_61',
     '-gencode', 'arch=compute_70,code=sm_70',
     '-gencode', 'arch=compute_70,code=compute_70',
-    '-gencode', 'arch=compute_75,code=sm_75',
-    '-gencode', 'arch=compute_75,code=compute_75'
+    # '-gencode', 'arch=compute_75,code=sm_75', # uncomment for RTX 2080 and CUDA 10
+    # '-gencode', 'arch=compute_75,code=compute_75'
 ]
 
 setup(

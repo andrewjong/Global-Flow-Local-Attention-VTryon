@@ -105,8 +105,9 @@ For a quick exploration of our model, find the online [colab demo](https://colab
 conda create -n gfla python=3.7 -y
 conda activate gfla
 
+# use cuda90 for TeslaV100s, cuda100 for RTX 2080; if using cuda100, check the note below for custom cuda extensions
+conda install pytorch==1.0.0 torchvision==0.2.1 cuda90 -c pytorch
 pip install "pillow<7.0.0"
-conda install pytorch==1.0.0 torchvision==0.2.1 cuda100 -c pytorch
 
 # 2. Install dependency
 pip install -r requirement.txt
