@@ -15,20 +15,20 @@ import warnings
 class AnimationDataset(BaseDataset):
     '''
     The dataset for animation tasks.
-    For Example: 
-        Face Image Animation 
+    For Example:
+        Face Image Animation
         Pose-Guided Person Image Animation
     '''
 
     @staticmethod
     def modify_commandline_options(parser, is_train):
         parser = BaseDataset.modify_commandline_options(parser, is_train)
-        parser.add_argument('--n_frames_total', type=int, default=30, help='the overall number of frames in a sequence to train with')  
+        parser.add_argument('--n_frames_total', type=int, default=30, help='the overall number of frames in a sequence to train with')
         parser.add_argument('--max_frames_per_gpu', type=int, default=6, help='number of frames to load into one GPU at a time')
         parser.add_argument('--n_frames_pre_load_test', type=int, default=1, help='number of frames to load every time when test')
         parser.add_argument('--total_test_frames', type=int, default=300, help='the overall number of frames to load every sequence when test')
         parser.add_argument('--max_t_step', type=int, default=1, help='max spacing between neighboring sampled frames. If greater than 1, the network may randomly skip frames during training.')
-        parser.add_argument('--debug', action='store_true', help='debuge mode') 
+        parser.add_argument('--debug', action='store_true', help='debuge mode')
 
         return parser
 
@@ -62,11 +62,11 @@ class AnimationDataset(BaseDataset):
 
     def update_seq_idx(self, A_paths, index):
         if self.opt.isTrain:
-            seq_idx = index % self.n_of_seqs            
+            seq_idx = index % self.n_of_seqs
             return None, None, None, seq_idx
         else:
             if self.opt.total_test_frames is not None:
-                self.change_seq = self.frame_idx >= (self.opt.total_test_frames + self.opt.start_frame) 
+                self.change_seq = self.frame_idx >= (self.opt.total_test_frames + self.opt.start_frame)
             else:
                 self.change_seq = self.frame_idx >= self.frames_count[self.seq_idx]
             if self.change_seq:
@@ -75,16 +75,16 @@ class AnimationDataset(BaseDataset):
             return None, None, None, self.seq_idx
 
     def get_video_params(self, opt, n_frames_total, cur_seq_len, frame_idx, img_paths):
-        if opt.isTrain:        
-            n_frames_total = min(n_frames_total, cur_seq_len)          # number of frames to load every dataset.item() 
-            n_frames_per_load = opt.max_frames_per_gpu                 # number of frames to load into GPUs at one time 
+        if opt.isTrain:
+            n_frames_total = min(n_frames_total, cur_seq_len)          # number of frames to load every dataset.item()
+            n_frames_per_load = opt.max_frames_per_gpu                 # number of frames to load into GPUs at one time
             n_frames_per_load = min(n_frames_total, n_frames_per_load)
-            n_loadings = n_frames_total // n_frames_per_load           # how many times are needed to load entire sequence into GPUs         
+            n_loadings = n_frames_total // n_frames_per_load           # how many times are needed to load entire sequence into GPUs
             n_frames_total = n_frames_per_load * n_loadings            # rounded overall number of frames to read from the sequence
-            
+
             max_t_step = min(opt.max_t_step, cur_seq_len//n_frames_total)
             t_step = np.random.randint(max_t_step) + 1                    # spacing between neighboring sampled frames
-            offset_max = max(1, cur_seq_len - (n_frames_total-1)*t_step)  # maximum possible index for the first frame        
+            offset_max = max(1, cur_seq_len - (n_frames_total-1)*t_step)  # maximum possible index for the first frame
 
             start_idx = np.random.randint(offset_max)                 # offset for the first frame to load
             if opt.debug:
@@ -92,10 +92,10 @@ class AnimationDataset(BaseDataset):
                     % (n_frames_total, start_idx, t_step))
         else:
             start_idx = frame_idx
-            t_step = 1  
+            t_step = 1
             if opt.debug:
                 print("loading %d frames in total, first frame starting at index %d, space between neighboring frames is %d"
-                    % (n_frames_total, start_idx, t_step))  
+                    % (n_frames_total, start_idx, t_step))
 
         img = Image.open(img_paths[start_idx])
         img_size = img.size
@@ -108,12 +108,12 @@ class AnimationDataset(BaseDataset):
         if affine is not None:
             angle, translate, scale = affine['angle'], affine['shift'], affine['scale']
             fillcolor = None if not fillWhiteColor else (255,255,255)
-            image = F.affine(image, angle=angle, translate=translate, scale=scale, shear=0, fillcolor=fillcolor)  
+            image = F.affine(image, angle=angle, translate=translate, scale=scale, shear=0, fillcolor=fillcolor)
         if toTensor:
             image = F.to_tensor(image)
         if normalize:
             image = F.normalize(image, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-        return image                 
+        return image
 
 
 
@@ -127,9 +127,10 @@ class AnimationDataset(BaseDataset):
 
     def __len__(self):
         if self.opt.isTrain:
-            return len(self.A_paths)
+            size = len(self.A_paths)
         else:
-            return sum(self.frames_count) // self.opt.n_frames_pre_load_test
+            size = sum(self.frames_count) // self.opt.n_frames_pre_load_test
+        return min(size, self.opt.max_dataset_size)
 
 
     def name(self):
