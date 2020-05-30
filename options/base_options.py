@@ -9,7 +9,7 @@ import sys
 
 class BaseOptions():
     def __init__(self):
-        self.parser = argparse.ArgumentParser()
+        self.parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
         self.initialized = False
 
     def initialize(self, parser):
