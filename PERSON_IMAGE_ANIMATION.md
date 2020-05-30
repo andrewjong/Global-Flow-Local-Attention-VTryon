@@ -71,7 +71,7 @@ python test.py \
 Andrew's training command.
 ```
 python train.py \
---name train_$(date +"%Y-%m-%d-%T") \
+--name train_$(date +"%Y-%m-%d_%H-%M-%S") \
 --model dance \
 --attn_layer=2,3 --kernel_size=2=5,3=3 \
 --dataset_mode dance --sub_dataset fashion \
