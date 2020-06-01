@@ -70,6 +70,9 @@ python test.py \
 ### Training
 Andrew's training command.
 ```
+python -m visdom.server -port 5005
+```
+```
 python train.py \
 --name train_$(date +"%Y-%m-%d_%H-%M-%S") \
 --model dance \
@@ -79,6 +82,7 @@ python train.py \
 --batchSize 8 \
 --dataroot /newDisk/dataset/vvt_gfla_format \
 --checkpoints_dir checkpoints
+--no_clean_pose  # use this to only use alphapose, no Motion Extraction Net
 ```
 
 
