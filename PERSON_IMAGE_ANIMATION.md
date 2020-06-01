@@ -81,7 +81,7 @@ python train.py \
 --gpu_id 0,1,2,3 --display_port 5005 \
 --batchSize 8 \
 --dataroot /newDisk/dataset/vvt_gfla_format \
---checkpoints_dir checkpoints
+--checkpoints_dir checkpoints \
 --no_clean_pose  # use this to only use alphapose, no Motion Extraction Net
 ```
 
